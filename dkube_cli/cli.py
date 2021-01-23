@@ -6,9 +6,9 @@ from pathlib import Path
 import click
 from dkube.sdk import DkubeApi
 
-from dkube_cli.commands.datum import code, dataset, model
-from dkube_cli.commands.projects import project
-from dkube_cli.commands.runs import run
+from .commands.datum import code, dataset, model
+from .commands.projects import project
+from .commands.runs import run
 
 config = ConfigParser()
 config.read(str(Path.home() / ".dkube.ini"))
