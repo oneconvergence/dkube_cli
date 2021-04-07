@@ -7,6 +7,7 @@ import click
 from dkube.sdk import DkubeApi
 
 from .commands.datum import code, dataset, model
+from .commands.ide import ide
 from .commands.projects import project
 from .commands.runs import run
 
@@ -69,6 +70,7 @@ main.add_command(code)
 main.add_command(dataset)
 main.add_command(model)
 main.add_command(run)
+main.add_command(ide)
 
 if __name__ == "__main__":
     sys.exit(main(""))  # pragma: no cover

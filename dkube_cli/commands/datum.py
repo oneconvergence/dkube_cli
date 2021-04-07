@@ -6,19 +6,21 @@ from tabulate import tabulate
 
 
 def list_datums(data):
-    repos = [["name", "source", "url", "last_updated", "status", "reason"]]
-    for row in data[0]["datums"]:
-        p = DatumModel(**row["datum"])
-        repos.append(
-            [
-                p.name,
-                p.source,
-                p.url,
-                p.generated["updated_time"]["end"],
-                p.generated["status"]["state"],
-                p.generated["status"]["reason"],
-            ]
-        )
+    repos = [["name", "owner", "source", "url", "last_updated", "status", "reason"]]
+    for entry in data:
+        for row in entry["datums"]:
+            p = DatumModel(**row["datum"])
+            repos.append(
+                [
+                    p.name,
+                    entry["owner"],
+                    p.source,
+                    p.url,
+                    p.generated["updated_time"]["end"],
+                    p.generated["status"]["state"],
+                    p.generated["status"]["reason"],
+                ]
+            )
 
     print(tabulate(repos, headers="firstrow", showindex="always"))
 
@@ -42,9 +44,10 @@ def model():
 
 
 @code.command("list")
+@click.option("-a", "--all", is_flag=True, help="show all resources", default=False)
 @click.pass_obj
-def list_code(obj):
-    list_datums(obj["api"].list_code(obj["username"]))
+def list_code(obj, all):
+    list_datums(obj["api"].list_code(obj["username"], shared=all))
 
 
 @code.command("get")
@@ -57,8 +60,9 @@ def get_code(obj, name):
 
 @dataset.command("list")
 @click.pass_obj
-def list_datasets(obj):
-    list_datums(obj["api"].list_datasets(obj["username"]))
+@click.option("-a", "--all", is_flag=True, help="show all resources", default=False)
+def list_datasets(obj, all):
+    list_datums(obj["api"].list_datasets(obj["username"], shared=all))
 
 
 @dataset.command("get")
@@ -71,8 +75,9 @@ def get_dataset(obj, name):
 
 @model.command("list")
 @click.pass_obj
-def list_models(obj):
-    list_datums(obj["api"].list_models(obj["username"]))
+@click.option("-a", "--all", is_flag=True, help="show all resources", default=False)
+def list_models(obj, all):
+    list_datums(obj["api"].list_models(obj["username"], shared=all))
 
 
 @model.command("get")
