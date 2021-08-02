@@ -26,7 +26,7 @@ def run(obj, run_type):
 def list(obj, shared):
     data = obj["api"].list_runs(obj["type"], obj["username"], shared=shared)
 
-    jobs = [["owner", "name", "gpu", "last_updated", "status"]]
+    jobs = [["owner", "name", "tags", "description", "gpu", "last_updated", "status"]]
     for entry in data:
         for row in entry["jobs"]:
             p = JobModel(**row)
@@ -36,6 +36,8 @@ def list(obj, shared):
                 [
                     entry["owner"],
                     p.name,
+                    p.parameters[obj["type"]]["tags"],
+                    p.description,
                     p.parameters[obj["type"]]["ngpus"],
                     p.parameters["generated"]["timestamps"]["start"],
                     p.parameters["generated"]["status"]["state"],
@@ -43,6 +45,31 @@ def list(obj, shared):
             )
 
     print(tabulate(jobs, headers="firstrow", showindex="always"))
+
+
+@run.command()
+@click.pass_obj
+@click.argument("name")
+def delete(obj, name):
+    jobs = [name]
+    if name == "all":
+        jobs = []
+        data = obj["api"].list_runs(obj["type"], obj["username"], shared=False)
+        for entry in data:
+            for row in entry["jobs"]:
+                if row["parameters"][obj["type"]] is None:
+                    continue
+                jobs.append(row["name"])
+
+    if (len(jobs)) == 0:
+        print("No IDEs found")
+        return
+
+    print(f"deleting {len(jobs)} runs ", " ".join(jobs))
+
+    obj["api"]._api.jobs_list_delete_by_class(
+        obj["username"], obj["type"], {"jobs": jobs}
+    )
 
 
 @run.command()

@@ -1,4 +1,5 @@
 """Console script for dkube_cli."""
+import os
 import sys
 from configparser import ConfigParser
 from pathlib import Path
@@ -12,7 +13,14 @@ from .commands.projects import project
 from .commands.runs import run
 
 config = ConfigParser()
-config.read(str(Path.home() / ".dkube.ini"))
+
+if os.path.exists(str(Path.home() / ".dkube.ini")):
+    config.read(str(Path.home() / ".dkube.ini"))
+elif os.path.exists(str(Path.home() / ".da.ini")):
+    config.read(str(Path.home() / ".da.ini"))
+else:
+    print("you need to run dkube configure first")
+    sys.exit(-1)
 
 
 @click.group()
