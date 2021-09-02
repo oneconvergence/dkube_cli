@@ -5,12 +5,15 @@ from configparser import ConfigParser
 from pathlib import Path
 
 import click
+import click_log
 from dkube.sdk import DkubeApi
-
+from logzero import logger
+import logging
 from .commands.datum import code, dataset, model
 from .commands.ide import ide
 from .commands.projects import project
 from .commands.runs import run
+from .commands.tracing import tracing
 
 config = ConfigParser()
 
@@ -22,8 +25,11 @@ else:
     print("you need to run dkube configure first")
     sys.exit(-1)
 
+logger.setLevel(logging.INFO)
+
 
 @click.group()
+@click_log.simple_verbosity_option(logger)
 @click.pass_context
 def main(ctx):
     """Console script for dkube_cli."""
@@ -79,6 +85,7 @@ main.add_command(dataset)
 main.add_command(model)
 main.add_command(run)
 main.add_command(ide)
+main.add_command(tracing)
 
 if __name__ == "__main__":
     sys.exit(main(""))  # pragma: no cover

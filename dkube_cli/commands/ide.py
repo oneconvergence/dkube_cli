@@ -26,6 +26,8 @@ def list(obj, shared):
                 [
                     entry["owner"],
                     p.name,
+                    p.description,
+                    p.parameters["notebook"]["tags"],
                     p.parameters["notebook"]["ngpus"],
                     p.parameters["generated"]["timestamps"]["start"],
                     p.parameters["generated"]["status"]["state"],
