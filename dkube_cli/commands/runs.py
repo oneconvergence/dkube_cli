@@ -62,7 +62,7 @@ def delete(obj, name):
                 jobs.append(row["name"])
 
     if (len(jobs)) == 0:
-        print("No IDEs found")
+        print("No runs found")
         return
 
     print(f"deleting {len(jobs)} runs ", " ".join(jobs))
